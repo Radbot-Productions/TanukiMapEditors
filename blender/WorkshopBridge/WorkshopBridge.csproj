@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><AssemblyName>TanukiWorkshop</AssemblyName><ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks><DefineConstants>STEAMWORKS_WIN;STEAMWORKS_X64</DefineConstants><NoWarn>CS8981</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../shared/PortableWorkshopClient.cs" Link="PortableWorkshopClient.cs" />
+    <Compile Include="../../vendor/SteamworksNET/**/*.cs" Link="Steamworks/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="../../vendor/SteamworksNET/tanuki_steam_api64.dll" Link="tanuki_steam_api64.dll" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+</Project>
+

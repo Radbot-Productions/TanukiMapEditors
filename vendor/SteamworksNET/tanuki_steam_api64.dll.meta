@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: ba900ff1609e46d0aa72eb6bb6fc1b08
+PluginImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  isPreloaded: 0
+  isOverridable: 0
+  platformData:
+  - first:
+      Any:
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 1
+      settings:
+        CPU: x86_64
+        OS: Windows
+  userData:
+  assetBundleName:
+  assetBundleVariant:

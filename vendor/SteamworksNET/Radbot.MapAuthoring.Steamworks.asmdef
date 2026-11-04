@@ -1,0 +1,8 @@
+{
+  "name": "Radbot.MapAuthoring.Steamworks",
+  "references": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}
