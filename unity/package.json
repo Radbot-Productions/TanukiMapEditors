@@ -1,0 +1,33 @@
+{
+  "name": "com.radbot.tanuki-map-authoring",
+  "version": "0.2.0-preview.3",
+  "displayName": "Tanuki Map Authoring",
+  "description": "Author static Tanuki maps entirely in Unity and export portable runtime packages.",
+  "unity": "6000.6",
+  "license": "MIT",
+  "author": {
+    "name": "Radbot Productions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Radbot-Productions/TanukiMapEditors.git",
+    "directory": "unity"
+  },
+  "documentationUrl": "https://github.com/Radbot-Productions/TanukiMapEditors/blob/main/docs/unity.md",
+  "changelogUrl": "https://github.com/Radbot-Productions/TanukiMapEditors/blob/main/CHANGELOG.md",
+  "licensesUrl": "https://github.com/Radbot-Productions/TanukiMapEditors/blob/main/unity/LICENSE.md",
+  "keywords": [
+    "tanuki",
+    "map",
+    "level",
+    "authoring",
+    "gltf"
+  ],
+  "dependencies": {
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0"
+  }
+}

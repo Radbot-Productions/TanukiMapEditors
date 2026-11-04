@@ -1,0 +1,11 @@
+{
+  "name": "Radbot.MapAuthoring.Editor",
+  "rootNamespace": "Radbot.MapAuthoring.Editor",
+  "references": [
+    "Radbot.MapAuthoring",
+    "Radbot.MapAuthoring.Steamworks"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

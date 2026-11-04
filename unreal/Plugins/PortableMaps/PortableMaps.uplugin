@@ -1,0 +1,47 @@
+{
+  "FileVersion": 3,
+  "Version": 2,
+  "VersionName": "0.2.0-preview.3",
+  "FriendlyName": "Tanuki Map Editor",
+  "Description": "Create, open, preview and publish Tanuki maps using the Unreal viewport.",
+  "CanContainContent": true,
+  "Modules": [
+    {
+      "Name": "PortableMaps",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "PortableMapsEditor",
+      "Type": "Editor",
+      "LoadingPhase": "PostEngineInit"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "glTFRuntime",
+      "Enabled": true
+    },
+    {
+      "Name": "OnlineSubsystem",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "GLTFExporter",
+      "Enabled": true,
+      "TargetAllowList": [
+        "Editor"
+      ]
+    },
+    {
+      "Name": "SteamShared",
+      "Enabled": true,
+      "PlatformAllowList": [
+        "Win64"
+      ]
+    }
+  ]
+}

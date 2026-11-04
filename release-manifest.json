@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0-preview.3",
+  "mapSchema": 5,
+  "platform": "Windows x64",
+  "previewPlayer": "https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/player-v0.2.0-preview.3",
+  "unrealBuildId": "55116800",
+  "helperSha256": "aa37f240c2596d1dcb44121c32d24c5bd29c9c5dafc4914663ac9b927d4acecd",
+  "editors": [
+    {
+      "editor": "Blender",
+      "archive": "Tanuki-Blender-0.2.0-preview.3.zip",
+      "bytes": 66886141,
+      "sha256": "5ddb7e4ab3445a3cee8332ce1cc58f1e3f07598a462e48bf55b7c8c2f95886a1",
+      "url": "https://github.com/Radbot-Productions/TanukiMapEditors/releases/download/editors-v0.2.0-preview.3/Tanuki-Blender-0.2.0-preview.3.zip"
+    },
+    {
+      "editor": "Unity",
+      "archive": "Tanuki-Unity-0.2.0-preview.3.zip",
+      "bytes": 34325782,
+      "sha256": "c99818788052b01cc3141e6e4d62fa5a3347f007f0ecbcb37d91ed9eb0bc0a36",
+      "url": "https://github.com/Radbot-Productions/TanukiMapEditors/releases/download/editors-v0.2.0-preview.3/Tanuki-Unity-0.2.0-preview.3.zip"
+    },
+    {
+      "editor": "Godot",
+      "archive": "Tanuki-Godot-0.2.0-preview.3.zip",
+      "bytes": 36323185,
+      "sha256": "fa8f4bd03838fd823a562ce4baa164746bb92f9f8ff56691a2cee99bb34dd306",
+      "url": "https://github.com/Radbot-Productions/TanukiMapEditors/releases/download/editors-v0.2.0-preview.3/Tanuki-Godot-0.2.0-preview.3.zip"
+    },
+    {
+      "editor": "Unreal",
+      "archive": "Tanuki-Unreal-0.2.0-preview.3.zip",
+      "bytes": 107432921,
+      "sha256": "06785b5bcf3f21ccd41e56529539c813c7e547824604cac8754fa6900a6c39c9",
+      "url": "https://github.com/Radbot-Productions/TanukiMapEditors/releases/download/editors-v0.2.0-preview.3/Tanuki-Unreal-0.2.0-preview.3.zip"
+    }
+  ]
+}

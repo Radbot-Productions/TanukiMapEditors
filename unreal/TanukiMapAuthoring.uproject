@@ -1,0 +1,11 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Tanuki Map Authoring",
+  "Description": "Make Tanuki maps in Unreal's normal 3D viewport.",
+  "Plugins": [
+    { "Name": "PortableMaps", "Enabled": true },
+    { "Name": "glTFRuntime", "Enabled": true },
+    { "Name": "TanukiAuthoringPreview", "Enabled": true }
+  ]
+}

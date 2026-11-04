@@ -78,9 +78,18 @@ def glb_write(doc, binary):
 
 
 def validate(m, glb):
-    require(m.get('schemaVersion') in (1, 2, 3), "Unsupported map schema.")
+    require(m.get('schemaVersion') in (1, 2, 3, 4, 5), "Unsupported map schema.")
     require(isinstance(m.get('mapId'), str) and 0 < len(m['mapId']) <= 128, "Invalid Map ID.")
     require(hashlib.sha1(glb).hexdigest() == m.get('sceneSha1', '').lower(), "Geometry checksum mismatch.")
+    if m['schemaVersion']>=4:
+        require(m.get('baseLighting') in ('cartoon-street-day','cartoon-street-night'), 'Unsupported base lighting profile.')
+    if 'baseSun' in m:
+        sun=m['baseSun'];require(m['schemaVersion']>=5 and isinstance(sun,dict),'Unsupported base sun override.')
+        frame(dict(position=[0,0,0],rotation=sun.get('rotation')))
+        require(all(0<=v<=1 for v in vector(sun.get('color'))),'Invalid base sun color.')
+        intensity=sun.get('intensity')
+        require(type(intensity) in (int,float) and math.isfinite(intensity) and 0<=intensity<=10000000,'Invalid base sun intensity.')
+        require(type(sun.get('shadows')) is bool,'Invalid base sun shadows.')
     doc, _ = glb_read(glb)
     ids = set()
     for group in ('meshes', 'colliders', 'markers', 'lights'):
@@ -107,7 +116,7 @@ def validate(m, glb):
                     if e['type'] == 'capsule':
                         require(radius <= e.get('halfHeight', 0) <= 10000000, "Invalid capsule height.")
             if group == 'lights':
-                require(m['schemaVersion'] == 3 and e.get('type') in ('point', 'spot', 'directional'), "Unsupported portable light.")
+                require(m['schemaVersion'] >= 3 and e.get('type') in ('point', 'spot', 'directional'), "Unsupported portable light.")
                 require(all(0 <= v <= 1 for v in vector(e.get('color'))), "Invalid light color.")
                 require(type(e.get('shadows')) is bool, "Missing light shadow setting.")
                 intensity = e.get('intensity')

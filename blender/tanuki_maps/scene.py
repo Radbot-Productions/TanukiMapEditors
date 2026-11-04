@@ -13,13 +13,8 @@ U = Matrix(((-1,0,0),(0,0,1),(0,-1,0)))
 
 
 def root(context):
-    obj = context.object
-    while obj:
-        if obj.tanuki.kind == 'ROOT':
-            return obj
-        obj = obj.parent
     roots = [o for o in context.scene.objects if o.tanuki.kind == 'ROOT']
-    fmt.require(len(roots) == 1, "Select one Tanuki Map Root.")
+    fmt.require(len(roots) == 1, "The active scene must contain exactly one Tanuki Map Root.")
     return roots[0]
 
 
@@ -86,7 +81,7 @@ def new_map(sample='EMPTY'):
     block = material('Tanuki Block', (.5, .26, .12))
     cube('Floor', owner, (0, 0, -.1), (20, 20, .2), floor)
     boundary = empty('Play Boundary', owner, 'BOUNDARY')
-    boundary.location, boundary.scale = (0, 0, 4), (20, 20, 8)
+    boundary.location, boundary.scale = (0, 0, 3.875), (20, 20, 8.25)
     for i in range(4):
         start = empty('Player Start', owner, 'START')
         start.location = ((i-1.5)*2, 3, 1)
@@ -100,14 +95,9 @@ def new_map(sample='EMPTY'):
                 cube('Wall', owner, p, s, floor)
         else:
             cube('Platform', owner, (-5,-6,.25), (5,3,.5), floor)
-    light = bpy.data.lights.new('Preview Sun', 'SUN')
-    light.energy = 2
-    sun = bpy.data.objects.new('Preview Sun', light)
-    scene.collection.objects.link(sun)
-    sun.rotation_euler = (.5, -.4, -.5)
-    sun.tanuki.kind = 'PREVIEW'
-    scene.world = bpy.data.worlds.new('Tanuki Preview World')
-    scene.world.color = (.15, .15, .15)
+    from . import environment
+    environment.ensure(owner)
+    environment.references(owner)
     bpy.context.view_layer.objects.active = owner
     owner.select_set(True)
     return owner
@@ -172,19 +162,29 @@ def validate_material(mat, name):
                         (node.node_tree.name in ('glTF Material Output', 'glTF Settings') and not any(link.from_node==node for link in mat.node_tree.links))), name + ': unsupported shader group.')
 
 
+def export_objects(owner):
+    def included(obj):
+        if obj==owner or obj.type in ('CAMERA','LIGHT_PROBE'):return False
+        current=obj
+        while current and current!=owner:
+            if current.tanuki.kind in ('PREVIEW','LIGHTING','SKYBOX') or not current.tanuki.export_enabled:return False
+            current=current.parent
+        return True
+    def depth(obj):
+        count=0
+        while obj.parent and obj.parent!=owner:count+=1;obj=obj.parent
+        return count
+    return sorted((obj for obj in bpy.context.scene.objects if included(obj)),key=depth)
+
+
 def export_map(owner, path):
     bpy.context.view_layer.update()
     fmt.require(owner.tanuki.map_id and len(owner.tanuki.map_id) <= 128, 'Set a Map ID.')
     fmt.require(all(abs(v-1) < .00001 for v in owner.matrix_world.to_scale()), 'Map root must have unit scale.')
-    objects = []
-    def visit(parent):
-        for obj in parent.children:
-            if obj.tanuki.kind != 'PREVIEW':
-                objects.append(obj);visit(obj)
-    visit(owner)
-    outside=[o.name for o in bpy.context.scene.objects if o.type=='MESH' and o not in objects and o.tanuki.kind!='PREVIEW']
-    fmt.require(not outside,'Move scenery under the Map Root with Add Selection to Map: '+', '.join(outside[:5]))
-    fmt.require(not any(o.tanuki.kind == 'ROOT' for o in objects), 'Nested map roots are unsupported.')
+    from . import environment
+    lighting=environment.ensure(owner)
+    fmt.require(sum(o.tanuki.kind=='ROOT' for o in bpy.context.scene.objects)==1,'Keep exactly one Tanuki Map Root in the scene.')
+    objects=export_objects(owner)
     boundaries = [o for o in objects if o.tanuki.kind == 'BOUNDARY']
     starts = [o for o in objects if o.tanuki.kind == 'START']
     fmt.require(len(boundaries) == 1 and len(starts) >= 4, 'A map needs exactly one boundary and at least four player starts.')
@@ -192,7 +192,7 @@ def export_map(owner, path):
         fmt.require(obj.type in ('MESH','EMPTY','LIGHT'), obj.name + ': bake curves, text, armatures and other content to static meshes.')
         fmt.require(not obj.animation_data and not obj.constraints and not obj.rigid_body, obj.name + ': bake animated, constrained or dynamic content first.')
         if obj.type == 'LIGHT':
-            fmt.require(obj.tanuki.kind == 'LIGHT' and obj.data.type in ('POINT','SPOT','SUN'), obj.name + ': use a portable Point, Spot or Directional light.')
+            fmt.require(obj.data.type in ('POINT','SPOT','SUN'), obj.name + ': use a portable Point, Spot or Directional light, or disable Include in Export.')
     inv = owner.matrix_world.inverted()
     b = boundaries[0]
     bt = inv @ b.matrix_world
@@ -208,25 +208,30 @@ def export_map(owner, path):
     bindings=[]
     for obj in [owner]+objects:
         indices[obj]=len(author_nodes)
-        local=Matrix.Identity(4) if obj==owner else obj.parent.matrix_world.inverted() @ obj.matrix_world
+        parent=obj.parent if obj.parent in indices else owner
+        local=Matrix.Identity(4) if obj==owner else parent.matrix_world.inverted() @ obj.matrix_world
         position,rotation,s=local.decompose()
         p=U @ position
         q=(U @ rotation.to_matrix() @ U.inverted()).to_quaternion()
-        author_nodes.append(dict(name=obj.name,parent=-1 if obj==owner else indices[obj.parent],
+        author_nodes.append(dict(name=obj.name,parent=-1 if obj==owner else indices[parent],
             position=dict(x=p.x,y=p.y,z=p.z),rotation=dict(x=q.x,y=q.y,z=q.z,w=q.w),scale=dict(x=s.x,y=s.z,z=s.y)))
     def bind(identity,obj): bindings.append(dict(id=identity,node=indices[obj]))
     bind('boundary',b)
     for marker,obj in zip(markers,starts):bind(marker['id'],obj)
     lights = []
     for obj in objects:
-        if obj.tanuki.kind != 'LIGHT':
+        if obj.type != 'LIGHT':
             continue
         p = obj.tanuki
         # Native Blender lights shine along -Z; portable lights shine along +X.
         frame = inv @ obj.matrix_world @ Matrix.Rotation(math.pi/2, 4, 'X')
-        lights.append(dict(id='light-'+str(len(lights)),type={'POINT':'point','SPOT':'spot','SUN':'directional'}[obj.data.type],
-                           color=list(p.color), intensity=p.intensity, range=p.range_m*100, innerCone=p.inner_cone,
-                           outerCone=p.outer_cone, shadows=p.shadows, **record_frame(frame)))
+        native=obj.tanuki.kind!='LIGHT';data=obj.data
+        intensity=data.energy*683/(1 if data.type=='SUN' else 4*math.pi) if native else p.intensity
+        outer=math.degrees(data.spot_size)/2 if native and data.type=='SPOT' else p.outer_cone
+        inner=outer*(1-data.spot_blend) if native and data.type=='SPOT' else p.inner_cone
+        lights.append(dict(id='light-'+str(len(lights)),type={'POINT':'point','SPOT':'spot','SUN':'directional'}[data.type],
+                           color=list(data.color if native else p.color),intensity=intensity,range=(data.cutoff_distance if native else p.range_m)*100,innerCone=inner,
+                           outerCone=outer,shadows=data.use_shadow if native else p.shadows,**record_frame(frame)))
         # Lights have a different native optical axis; metadata must store the
         # canonical +forward frame used by every other editor.
         frame=inv @ obj.matrix_world @ Matrix.Rotation(math.pi/2,4,'X')
@@ -294,9 +299,12 @@ def export_map(owner, path):
             node = next(n for n in doc['nodes'] if n.get('name') == entry['id'])
             fmt.require(not any(k in node for k in ('matrix','translation','rotation','scale')), 'Unexpected non-identity staging transform.')
             entry['mesh'] = node['mesh']
-        fmt.write(path, dict(schemaVersion=3 if lights else 2, mapId=owner.tanuki.map_id,
+        manifest=dict(schemaVersion=5, baseLighting=lighting.tanuki.base_lighting, mapId=owner.tanuki.map_id,
                   meshes=meshes,colliders=[],markers=markers,boundary=boundary,lights=lights,
-                  authoring=dict(version=1,nodes=author_nodes,bindings=bindings)), fmt.glb_write(doc,binary))
+                  authoring=dict(version=1,nodes=author_nodes,bindings=bindings))
+        sun=environment.export_sun(lighting)
+        if sun is not None:manifest['baseSun']=sun
+        fmt.write(path,manifest,fmt.glb_write(doc,binary))
         owner.tanuki.export_path = str(Path(path).resolve())
     finally:
         bpy.context.window.scene = source_scene
@@ -330,6 +338,10 @@ def import_map(path, fork=False):
     try:
         owner = empty(Path(path).stem, kind='ROOT')
         owner.tanuki.map_id = uuid.uuid4().hex if fork else manifest['mapId']
+        from . import environment
+        lighting=environment.ensure(owner)
+        lighting.tanuki.base_lighting=manifest.get('baseLighting','cartoon-street-day')
+        environment.import_sun(lighting,manifest.get('baseSun'))
         nodes=[owner]
         bindings={}
         authored=manifest.get('authoring')

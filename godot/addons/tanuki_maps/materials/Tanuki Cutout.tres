@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://addons/tanuki_maps/shaders/TanukiCutout.gdshader" id="1_epwwp"]
+
+[resource]
+resource_name = "Tanuki Cutout"
+render_priority = 0
+shader = ExtResource("1_epwwp")
+shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/roughness = 0.7
+shader_parameter/metallic = 0.0
+shader_parameter/roughness_channel = 0
+shader_parameter/metallic_channel = 0
+shader_parameter/normal_strength = 1.0
+shader_parameter/ao_channel = 0
+shader_parameter/uv_tiling = Vector2(1, 1)
+shader_parameter/uv_offset = Vector2(0, 0)
+shader_parameter/alpha_cutoff = 0.5

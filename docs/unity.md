@@ -1,38 +1,36 @@
-# Set up Unity
+# Unity setup
 
-Tested on Windows x64 with **Unity 6000.6.7f1**. Install that editor through [Unity Hub](https://unity.com/download), completing Unity's normal license setup. The starter project uses the Built-in renderer; URP integration is optional.
+Tested on Windows x64 with **Unity 6000.6.7f1**, installed through [Unity Hub](https://unity.com/download). The ready project uses Built-in rendering; URP integration is optional.
 
-## Recommended: ready authoring project
+1. Download **Tanuki-Unity-0.2.0-preview.3.zip** from the [editor release](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/editors-v0.2.0-preview.3).
+2. Extract to a new writable folder. In Unity Hub, add the folder containing Assets, Packages and ProjectSettings, and open it with the tested editor.
+3. Wait for imports/compilation, then open **Tanuki → Map Editor**.
+4. Choose **New → Create Empty Map**, Room, or Courtyard. Save the scene and assets normally.
 
-1. Download **Tanuki-Unity-…zip** from [Releases](https://github.com/Radbot-Productions/TanukiMapEditors/releases).
-2. Extract it to a new writable folder. Do not extract over an existing Unity project.
-3. In Unity Hub, choose **Add project from disk** and select the extracted folder containing `Assets`, `Packages`, and `ProjectSettings`.
-4. Open it with Unity 6000.6.7f1. Let package resolution, imports and compilation finish.
-5. Open **Tanuki → Map Editor** if the window did not open automatically.
+For an existing project, keep the kit in a permanent folder. In **Window → Package Manager → Install package from disk**, select `Packages/com.radbot.tanuki-map-authoring/package.json` inside the kit. Do not select the project's manifest.json. Save/commit before replacing an existing plugin.
 
-## Existing Unity project
+Keep scenery beneath the map root. Use Unity colliders for blocking geometry; colliders may be separate from visible meshes. Keep one boundary and at least four starts. The Components menu adds starts, boundaries, lights, Lighting Settings and Skybox. Lighting Settings selects Cartoon Street Day/Night. Enable Override Sun to edit rotation, color, lux and shadows through the normal Inspector. Additional lights remain independent. The generated character references show scale and are excluded from export.
 
-Back up or commit the project first. Keep the extracted kit in a permanent folder. Open **Window → Package Manager**, choose **Install package from disk**, and select `Packages/com.radbot.tanuki-map-authoring/package.json` inside the kit. Do not select the project's `Packages/manifest.json`.
+Create materials through **Tanuki → Materials** and edit their Tanuki shaders with Unity's normal Material Inspector. The texture/scalar controls match portable inputs; arbitrary Standard/URP shader graphs are not equivalent. Do not directly edit generated environment helpers.
 
-See Unity's [local package installation documentation](https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/managing-packages-window/upm-ui-actions/upm-ui-local). For URP, follow the optional integration's own README; installing the main package does not switch your project's render pipeline.
+## Play in Tanuki
 
-## First map and supported tools
+Press **Play in Tanuki**. It automatically finds the active scene's single map and exports its current state, including unsaved scene edits. **No manual map save/export, executable picker, or Workshop refresh is required.** Close and relaunch after further edits; this is a fresh snapshot, not live synchronization.
 
-1. Choose **Tanuki → Map Editor → New → Create Empty Map**, or start from Room/Courtyard.
-2. Keep scenery beneath the map root. Add Unity colliders to blocking surfaces; invisible collider objects can be separate from visible meshes.
-3. Use **Tanuki → Components** for Player Starts, the single Map Boundary, Point/Spot/Directional lights, **Lighting Settings**, and **Skybox**.
-4. Select **Lighting Settings** to switch Cartoon Street Day/Night. Skybox follows the preset. Extra map lights remain. Tanuki/Tengu sample references show scale and stay out of map export.
-5. Create materials through **Tanuki → Materials** and Unity's normal Material Inspector. Use the **Tanuki** shaders, with their supported texture/scalar parameters; native Standard/URP material compatibility does not expose all Tanuki-specific controls.
-6. Save the Unity scene and its assets. Export requires exactly one boundary, at least four starts, and supported static geometry/materials.
+The first use downloads the separate [Windows preview player](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/player-v0.2.0-preview.3), about **4.34 GB**. Progress appears in the editor. The plugins verify the download and install a shared copy under `%LOCALAPPDATA%/RadbotProductions/TanukiMapPreview`; missing/outdated players install automatically, and a failed startup can trigger one repair. Keep internet access available for first installation or repair. Windows prerequisites may need installation on a fresh computer. No game source, Unreal installation, or .NET installation is needed for this self-contained preview helper.
 
-These environment features are included in the upcoming 0.2 packages; older Unity packages are not feature-equivalent.
+The player uses Tanuki climbing/gliding/movement and Tengu movement. **Escape** opens the menu to switch character/free camera or exit. It contains the authored materials, collision, lights and selected base lighting. Native editor rendering can differ in exposure and shading.
 
-## Play and Workshop
+## Steam Workshop
 
-Unity's ordinary **Play** button runs the local authoring helper. **Play in Tanuki** launches the separately provided shared gameplay-preview player. Use **Choose Tanuki Preview** to select its `TanukiMapPreview.exe`, keeping the entire player package intact. If you do not have that player package, local authoring and `.tanukimap` export still work.
+Open Steam and sign in with Tanuki Tag access. Opening the Tanuki panel attempts a Steam connection automatically. Open browses subscribed maps; Export creates or updates an item. **Refresh** updates the displayed list; it is not required for local map preview. Save the editor project after publishing to retain the Workshop item association. Opening another creator's map forks its identity.
 
-Play in Tanuki exports current scene state automatically. Close and relaunch it after changes; it does not hot-reload the scene. The shared player checks actual game movement and lighting. Native editor previews can differ in tone mapping, attenuation and exposure.
+## Troubleshooting and compatibility
 
-Use **Map Editor → Open** for map files/subscribed Workshop maps and **Export** for local export or Workshop publishing. Workshop requires the Steam client, sign-in and Tanuki Tag Workshop access. Save the scene after publishing to preserve its item association.
+- New exports use **schema 5**, including editable sun overrides. This preview player reads schemas 1–5. The in-game Workshop runtime also needs schema-5 support before it can play newly exported maps; updating an editor does not update the Steam game automatically.
+- Exactly one map root must exist in the active scene. An ambiguous scene produces an error instead of choosing a random map.
+- A running preview retains its old snapshot. Close it and launch again after edits, especially lighting changes.
+- If the setup helper is missing, reinstall the complete editor kit, rather than GitHub's Source code ZIP. Check editor status and preview logs for download/startup failures.
+- Save projects before replacing plugins. Keep user maps and materials outside plugin installation folders. Report the editor/plugin version and relevant log in an [issue](https://github.com/Radbot-Productions/TanukiMapEditors/issues).
 
-If menus are absent, resolve all Console compile errors and verify the package is installed. If a light looks different in the game, edit its **Portable Map Light** settings, not only the generated native Light component. Save/commit your project before updating packages. Report the Unity version, renderer, plugin version and relevant Console/log output in an issue.
+See [material inputs](PortableMapMaterials.md) and [light units](PortableMapLights.md).

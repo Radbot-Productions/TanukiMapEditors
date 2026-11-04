@@ -1,30 +1,36 @@
-# Set up Godot
+# Godot setup
 
-Use **Godot 4.7.2 .NET on Windows x64** and **.NET SDK 10**. The standard non-.NET Godot download cannot load this C# addon. Install from [Godot's official downloads](https://godotengine.org/download/windows/) and [Microsoft's .NET SDK downloads](https://dotnet.microsoft.com/download/dotnet/10.0).
+Use **Godot 4.7.2 .NET on Windows x64** and **.NET SDK 10**. Install from [Godot](https://godotengine.org/download/windows/) and [Microsoft](https://dotnet.microsoft.com/download/dotnet/10.0). The non-.NET editor cannot load this C# addon.
 
-1. Download **Tanuki-Godot-…zip** from [Releases](https://github.com/Radbot-Productions/TanukiMapEditors/releases).
-2. Extract it to a new writable folder.
-3. In Godot's Project Manager, choose **Import**, select the extracted `project.godot`, and open it with the .NET editor.
-4. Let imports finish and build the C# project if prompted. The kit includes the addon, native Steam helper/bindings, shaders, materials, references and sample maps.
-5. Open **Project → Project Settings → Plugins** and enable **Tanuki Map Editor** if it is not already enabled.
-6. Use the **Tanuki Map Editor** dock's **New**, **Open**, and **Export** tabs.
+1. Download **Tanuki-Godot-0.2.0-preview.3.zip** from the [editor release](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/editors-v0.2.0-preview.3), and extract to a new writable folder.
+2. In Project Manager, import the extracted `project.godot` and open it.
+3. Let imports finish. If rebuilding is requested, use Godot's Build button. Enable Tanuki Map Editor under Project Settings → Plugins if needed.
+4. Open **Project → Tools → Tanuki Map Editor** if the dock is hidden. Choose New → Empty Map, Room, or Courtyard, and save a `.tscn` scene.
 
-Godot documents [plugin installation](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html) and [C# prerequisites/building](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html). Rebuild C# after changing tool scripts or exported properties.
+Keep scenery under the TanukiMapRoot. Collision shapes may be authored separately from visible meshes. Keep one boundary and at least four starts. Components adds native Point/Spot/Directional map lights, Lighting Settings and Skybox. Edit the root's Base Lighting preset and Override Sun properties through the normal Inspector; the sky follows the selected profile. Generated reference characters and environment helpers are excluded from export.
 
-## First map
+Use the bundled Tanuki ShaderMaterial presets through Godot's standard material Inspector. The supported inputs include textures, PBR scalars and normal strength. Native rendering is approximate; use Play in Tanuki to check final appearance.
 
-Create Empty Map or Room/Courtyard. Edit nodes with the normal Scene tree, Inspector and 3D viewport. Keep one Play Boundary, at least four Player Starts, supported static meshes and collision shapes. Visual meshes do not automatically imply blocking collision.
+The ready project is the recommended route. Existing-project integration requires the whole addon, C# dependencies, unsafe-code settings and native helper files; copying plugin.cfg alone is insufficient. Keep your own maps/materials outside the addon folder when updating.
 
-**Components → Lighting Settings** selects the map root's Cartoon Street Day/Night preset. **Skybox** shares that selection. Add Point/Spot/Directional lights from Components and edit their portable Inspector fields. Scale-reference characters and environment helpers are excluded from export.
+## Play in Tanuki
 
-Use the native **Tanuki PBR**, **Tanuki Cutout** and **Tanuki Transparent** ShaderMaterials under `addons/tanuki_maps/materials`. Duplicate resources into your map's own folder and edit them in the normal Inspector; textures are optional where scalar inputs are provided.
+Press **Play in Tanuki**. It automatically finds the active scene's single map and exports its current state, including unsaved scene edits. **No manual map save/export, executable picker, or Workshop refresh is required.** Close and relaunch after further edits; this is a fresh snapshot, not live synchronization.
 
-These environment features are included in the upcoming 0.2 packages. Save your editable map as a Godot scene; `.tanukimap` is its portable export.
+The first use downloads the separate [Windows preview player](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/player-v0.2.0-preview.3), about **4.34 GB**. Progress appears in the editor. The plugins verify the download and install a shared copy under `%LOCALAPPDATA%/RadbotProductions/TanukiMapPreview`; missing/outdated players install automatically, and a failed startup can trigger one repair. Keep internet access available for first installation or repair. Windows prerequisites may need installation on a fresh computer. No game source, Unreal installation, or .NET installation is needed for this self-contained preview helper.
 
-## Preview and Workshop
+The player uses Tanuki climbing/gliding/movement and Tengu movement. **Escape** opens the menu to switch character/free camera or exit. It contains the authored materials, collision, lights and selected base lighting. Native editor rendering can differ in exposure and shading.
 
-Godot's native Play runs the local authoring helper. **Play in Tanuki** uses the separate gameplay-preview package; choose its `TanukiMapPreview.exe` with **Choose Tanuki Preview**. Keep the whole player directory together. Each launch exports a fresh snapshot, including scene edits; close/relaunch after changes. The player is not included in the plugin kit.
+## Steam Workshop
 
-Workshop requires Steam running and signed in, Tanuki Tag access and current Workshop permission. Use Open to browse subscribed maps, and Export to create/update an item. Save the Godot scene after publishing to keep the item association.
+Open Steam and sign in with Tanuki Tag access. Opening the Tanuki panel attempts a Steam connection automatically. Open browses subscribed maps; Export creates or updates an item. **Refresh** updates the displayed list; it is not required for local map preview. Save the editor project after publishing to retain the Workshop item association. Opening another creator's map forks its identity.
 
-Missing dock: verify the .NET editor/SDK, rebuild and enable the plugin. C# load errors: include the build error, Godot/.NET/plugin versions in an issue. Do not overwrite an existing project's addon, project settings or maps when updating; save/commit first. The ready project is the recommended installation route. Advanced existing-project integration also needs the kit's C# project dependencies, unsafe-code settings and native Steam files; copying only `plugin.cfg` is insufficient.
+## Troubleshooting and compatibility
+
+- New exports use **schema 5**, including editable sun overrides. This preview player reads schemas 1–5. The in-game Workshop runtime also needs schema-5 support before it can play newly exported maps; updating an editor does not update the Steam game automatically.
+- Exactly one map root must exist in the active scene. An ambiguous scene produces an error instead of choosing a random map.
+- A running preview retains its old snapshot. Close it and launch again after edits, especially lighting changes.
+- If the setup helper is missing, reinstall the complete editor kit, rather than GitHub's Source code ZIP. Check editor status and preview logs for download/startup failures.
+- Save projects before replacing plugins. Keep user maps and materials outside plugin installation folders. Report the editor/plugin version and relevant log in an [issue](https://github.com/Radbot-Productions/TanukiMapEditors/issues).
+
+See [material inputs](PortableMapMaterials.md) and [light units](PortableMapLights.md).

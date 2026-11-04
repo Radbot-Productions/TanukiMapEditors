@@ -1,0 +1,12 @@
+packages=11
+/TanukiAuthoringPreview/Character/SKEL_Tanuki.SKEL_Tanuki
+/TanukiAuthoringPreview/Character/SK_Tanuki.SK_Tanuki
+/TanukiAuthoringPreview/Character/T_Tanuki.T_Tanuki
+/TanukiAuthoringPreview/Character/MI_Tanuki.MI_Tanuki
+/TanukiAuthoringPreview/Animation/Idle.Idle
+/TanukiAuthoringPreview/Animation/Walk.Walk
+/TanukiAuthoringPreview/Animation/Run.Run
+/TanukiAuthoringPreview/Animation/Fall.Fall
+/TanukiAuthoringPreview/Animation/Glide.Glide
+/TanukiAuthoringPreview/Animation/ClimbIdle.ClimbIdle
+/TanukiAuthoringPreview/Animation/ClimbUp.ClimbUp

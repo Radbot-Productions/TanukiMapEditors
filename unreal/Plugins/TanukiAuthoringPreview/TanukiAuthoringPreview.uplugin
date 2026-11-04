@@ -1,0 +1,9 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0-preview.1",
+  "FriendlyName": "Tanuki Authoring Preview",
+  "Description": "Tanuki character visuals and movement animations for the map authoring preview.",
+  "CanContainContent": true,
+  "Plugins": [{ "Name": "PortableMaps", "Enabled": true }]
+}

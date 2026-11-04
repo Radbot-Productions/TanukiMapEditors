@@ -1,0 +1,17 @@
+MAKE A TANUKI MAP
+
+1. Install Godot 4.7.2 .NET and .NET SDK 10 from their official download pages.
+   https://godotengine.org/download/windows/
+   https://dotnet.microsoft.com/en-us/download/dotnet/10.0
+2. Extract this whole folder and open project.godot in Godot.
+3. Use the Tanuki Map Editor dock: New > Create Empty Map or Start From Sample.
+4. Press Play. Edit your map in Godot's viewport, then Export > Steam Workshop.
+
+The kit includes its compiled addon, source, sample maps and Steam bindings.
+If you rebuild, use Godot's Build button. If the dock is closed, use
+Project > Tools > Tanuki Map Editor. For an existing C# Godot project, copy
+addons/tanuki_maps, build, and enable Tanuki Map Editor in Project Settings > Plugins.
+No Unity installation, Unreal installation, or Tanuki source checkout is needed.
+
+Workshop publishing requires the Steam desktop client and Tanuki Tag access.
+Public in-game Workshop map playback is a separate rollout step.

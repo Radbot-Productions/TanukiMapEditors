@@ -1,0 +1,12 @@
+{
+  "name": "com.radbot.tanuki-map-authoring.urp",
+  "version": "0.1.0-preview.9",
+  "displayName": "Tanuki Materials for URP",
+  "description": "Plugin-owned Tanuki PBR, Cutout and Transparent shaders for the Universal Render Pipeline.",
+  "unity": "6000.6",
+  "license": "MIT",
+  "dependencies": {
+    "com.radbot.tanuki-map-authoring": "0.1.0-preview.9",
+    "com.unity.render-pipelines.universal": "17.6.0"
+  }
+}

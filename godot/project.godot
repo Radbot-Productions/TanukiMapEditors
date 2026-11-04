@@ -1,0 +1,9 @@
+config_version=5
+[application]
+config/name="Tanuki Map Authoring"
+[rendering]
+renderer/rendering_method="gl_compatibility"
+[dotnet]
+project/assembly_name="TanukiMapAuthoring"
+[editor_plugins]
+enabled=PackedStringArray("res://addons/tanuki_maps/plugin.cfg")

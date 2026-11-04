@@ -1,0 +1,19 @@
+MAKE A TANUKI MAP IN UNREAL
+
+1. Install the supported Unreal 5.8.1 editor using Epic Games Launcher.
+2. Open TanukiMapAuthoring.uproject. Tanuki Map Editor opens automatically.
+3. Choose New > Create Empty Map or Start From Sample.
+4. Press Play to run, jump, climb and glide with the Tanuki preview character.
+5. Edit your map in the normal Unreal viewport. Export > Steam Workshop uploads it.
+
+Steam must be running and signed into an account with Tanuki Tag access.
+The kit includes its plugins, character preview and sample maps. It does not need
+the Tanuki game source, Unity or Godot. The release includes precompiled plugins;
+source checkouts require the usual Unreal C++ toolchain until packaged.
+
+If the window is closed, use Tools > Tanuki Map Editor.
+Use Selected Viewport or New Editor Window from Unreal's Play menu.
+
+Controls: WASD move, Shift run/release climbing, Space jump/hold to glide, mouse look.
+Walk into a climbable wall to attach. WASD moves along it; climb over clear ledges.
+Object form, object creation, combat and the game's other abilities are excluded.

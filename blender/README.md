@@ -1,79 +1,37 @@
-# Tanuki Map Editor for Blender
+# Blender setup
 
-Windows authoring preview targeting Blender 4.5.15 LTS. Install the complete ZIP
-through **Edit > Preferences > Add-ons > Install from Disk**, enable **Tanuki Map
-Editor**, then open the 3D viewport sidebar (N), **Tanuki** tab.
+Tested on Windows x64 with Blender **4.5.15 LTS**. Install [Blender 4.5 LTS](https://www.blender.org/download/lts/4-5/).
 
-- **New:** Empty Map, Room or Courtyard. Each creates a separate scene, preserving
-  existing unsaved work, with a floor, one boundary, four starts and preview sun.
-- **Open:** a `.tanukimap` file or Steam Workshop map. Imported geometry, textures,
-  collision, starts and lights remain editable. Save the scene as a `.blend` file.
-- **Export:** validate, save one `.tanukimap`, or publish/update through Steam.
-  Save your `.blend` after publishing to retain its item association. Opening a
-  different author's Workshop map creates a new map identity.
+1. Download **Tanuki-Blender-0.2.0-preview.3.zip** from the [editor release](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/editors-v0.2.0-preview.3). Keep it zipped; do not use GitHub's Source code ZIP.
+2. Open **Edit → Preferences → Add-ons**. Click the small **▼ at the top right**, beside the search/filter controls, then **Install from Disk…**.
+3. Select the ZIP, install, search for **Tanuki Map Editor**, and enable it.
+4. Return to the 3D Viewport, press **N**, and open the **Tanuki** sidebar tab.
+5. Expand **Map Files → New** and create an Empty Map, Room, or Courtyard sample.
 
-Use ordinary Blender transforms to build under the Map Root. Keep root scale at
-one and scene units in metres. **Add Selection to Map** parents new geometry while
-retaining its placement; export rejects scenery accidentally left outside the root.
-**New PBR Material** creates a portable material in the selected mesh's active slot.
-Select a mesh and choose **Export As**: Scenery,
-Scenery + Collision, Collision Only, or Exclude. Modifiers are evaluated for both
-exported geometry and the green collision overlay. Collision-only meshes export
-as invisible blocking triangles; visible scenery does not automatically collide.
-Unsupported dynamic/animated content and material features produce export errors.
-Use Principled BSDF materials with embedded PNG textures; bake procedural shaders.
+All supported objects in the **active scene** export by default. Select an object and clear **Include in Export** to opt it out; generated lighting/sky/character helpers are excluded automatically. There is no Add Selection to Map step. Keep exactly one map root, one play boundary and at least four player starts. Save your editable project as a `.blend`; export produces a separate `.tanukimap`.
 
-**Show Collision Through Geometry** draws collision edges in green with X-ray
-visibility. **Collision Only / Restore View** hides scenery without collision and
-restores the previous visibility when toggled again. Neither changes export use.
-Blue wire outlines show the boundary; use Box or Cylinder, with equal X/Y cylinder
-dimensions. Export needs exactly one boundary and at least four player starts.
-Cyan arrows show player-start facing (local -Y in Blender).
+Use **Load Material Presets**, then normal Material Properties/Shader Editor inputs. Choose Scenery + Collision for visible blocking meshes, Collision Only for separate invisible colliders, or Scenery for nonblocking visuals. The collapsible Collision section displays collision through geometry or isolates it temporarily.
 
-**Elements** adds starts, boundaries and Point, Spot or Directional lights. Native
-Blender light objects represent those lights in the viewport; edit their portable
-settings in the Tanuki panel. Point/Spot intensity is candela, Directional is lux;
-range is metres and spot angles are half angles in degrees. Color, range, cone
-angles and shadows survive map round trips. Native preview lighting/exposure can
-differ between editors. Plane/area lights are outside this version's contract.
-The sun created outside the map root is local preview illumination, not exported.
+Components adds Point, Spot and Directional lights. For native Blender lights without Tanuki metadata, export reads native light settings. For Tanuki lights, use their portable fields in Selected Element. Point/Spot intensity is candela, Directional intensity is lux. Lighting Settings selects Cartoon Street Day/Night; **Override Preset Sun** exposes its rotation, color, lux and shadows. Skybox follows the preset. Use Rendered shading, or enable Scene Lights and Scene World in Material Preview, to see native lighting. Native exposure differs; check final appearance in Play in Tanuki.
 
-**Play in Tanuki** exports a snapshot and launches `TanukiMapPreview.exe`, the
-dedicated gameplay player using the real Tanuki movement, climbing, gliding and
-camera code. Kits can bundle it; source-only kits select its executable in add-on
-preferences. Escape opens Resume, Free Camera / Tanuki Movement, Restart at Spawn,
-Settings and Exit Preview. Free camera uses WASD, Q/E, mouse look and Shift for
-speed. Closing it retires the snapshot while Blender stays open. Native editor
-lighting may still differ; final multiplayer behavior needs separate game checks.
+## Play in Tanuki
 
-Workshop uses the logged-in Steam client and Tanuki Tag app 5128560. The Windows
-helper bundles its .NET runtime and the same pinned Steamworks.NET bindings as
-the other tools. No password or game process is required. The Workshop remains
-subject to its current access restrictions. Requests/results and any assigned
-item ID remain under Blender's configuration `tanuki_maps/workshop` folder.
-Inspect an interrupted job before creating another item. Uploads are external
-operations; local export works without Steam. Publishing without a selected PNG
-generates an overview from exported scenery only.
+Press **Play in Tanuki**. It automatically finds the active scene's single map and exports its current state, including unsaved scene edits. **No manual map save/export, executable picker, or Workshop refresh is required.** Close and relaunch after further edits; this is a fresh snapshot, not live synchronization.
 
-Light maps use manifest schema 3 and need an updated runtime/editor. Maps without
-lights retain schema 2. Earlier schemas remain importable. Geometry stays baked
-in map space; this is not an archive of original Blender modifier history or
-arbitrary shader graphs. Supported names, hierarchy and transforms travel through
-the shared optional authoring metadata; collision and scenery retain paired
-ownership when provided by the source editor.
+The first use downloads the separate [Windows preview player](https://github.com/Radbot-Productions/TanukiMapEditors/releases/tag/player-v0.2.0-preview.3), about **4.34 GB**. Progress appears in the editor. The plugins verify the download and install a shared copy under `%LOCALAPPDATA%/RadbotProductions/TanukiMapPreview`; missing/outdated players install automatically, and a failed startup can trigger one repair. Keep internet access available for first installation or repair. Windows prerequisites may need installation on a fresh computer. No game source, Unreal installation, or .NET installation is needed for this self-contained preview helper.
 
-Development: add this tool directory to Blender's Python path, import
-`tanuki_maps`, then call `register()`. Build the distributable with
-`Scripts/Build-TanukiBlenderKit.ps1` through `Invoke-TanukiAutomationScope.ps1`.
+The player uses Tanuki climbing/gliding/movement and Tengu movement. **Escape** opens the menu to switch character/free camera or exit. It contains the authored materials, collision, lights and selected base lighting. Native editor rendering can differ in exposure and shading.
 
-Use **Load Material Presets**, then Blender's normal Material Properties and
-Shader Editor. The reusable **Tanuki PBR**, **Tanuki Cutout** and **Tanuki Transparent**
-shader groups expose supported inputs; PBR emission is optional. Duplicate a sample
-before editing it. `samples/TanukiMaterials.blend` contains material and shader-group
-assets, including an emission-enabled PBR example. Assign textures through native
-image nodes and use Non-Color data for roughness/metallic/normal/AO. Connect normal
-image color to **Normal Texture**; the group applies Normal Strength. Without
-textures, use scalar inputs. Cutout exposes Alpha and Alpha Cutoff. No custom
-material window or preview rebuild is required. Export reads the group inputs
-without changing the authored shader. See `Docs/PortableMapMaterials.md`
-in the Tanuki repository for the cross-engine parameter and packing conventions.
+## Steam Workshop
+
+Open Steam and sign in with Tanuki Tag access. Opening the Tanuki panel attempts a Steam connection automatically. Open browses subscribed maps; Export creates or updates an item. **Refresh** updates the displayed list; it is not required for local map preview. Save the editor project after publishing to retain the Workshop item association. Opening another creator's map forks its identity.
+
+## Troubleshooting and compatibility
+
+- New exports use **schema 5**, including editable sun overrides. This preview player reads schemas 1–5. The in-game Workshop runtime also needs schema-5 support before it can play newly exported maps; updating an editor does not update the Steam game automatically.
+- Exactly one map root must exist in the active scene. An ambiguous scene produces an error instead of choosing a random map.
+- A running preview retains its old snapshot. Close it and launch again after edits, especially lighting changes.
+- If the setup helper is missing, reinstall the complete editor kit, rather than GitHub's Source code ZIP. Check editor status and preview logs for download/startup failures.
+- Save projects before replacing plugins. Keep user maps and materials outside plugin installation folders. Report the editor/plugin version and relevant log in an [issue](https://github.com/Radbot-Productions/TanukiMapEditors/issues).
+
+See [material inputs](https://github.com/Radbot-Productions/TanukiMapEditors/blob/main/docs/PortableMapMaterials.md) and [light units](https://github.com/Radbot-Productions/TanukiMapEditors/blob/main/docs/PortableMapLights.md).

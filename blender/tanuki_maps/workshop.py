@@ -7,6 +7,17 @@ import bpy
 from . import scene
 
 _active=None
+_auto_connected=False
+
+def auto_connect(context):
+    global _auto_connected
+    if _auto_connected or _active:return
+    _auto_connected=True
+    def connect():
+        try:start(bpy.context,'connect')
+        except Exception as error:bpy.context.window_manager.tanuki_status=str(error)
+        return None
+    bpy.app.timers.register(connect,first_interval=.1)
 _timer=None
 _catalog=[('NONE','Choose a Workshop map','')]
 
@@ -58,6 +69,8 @@ def start(context,action):
                 items=result.get('items',[])
                 _catalog=[('NONE','Choose a Workshop map','')]+[(str(i['Id']),i['Title']+(' · Your map' if i['Owned'] else ''),'') for i in items]
                 wm.tanuki_status=result.get('account','Steam')+' · '+str(len(items))+' maps'
+            elif action=='connect':
+                wm.tanuki_status=result.get('account','Steam')+' · Steam connected'
             elif action=='download':
                 imported=scene.import_map(result['file'],fork=not result['owned'])
                 from . import restore_collision_view
@@ -85,7 +98,7 @@ def thumbnail(owner,target):
     owned=[]
     try:
         points=[]
-        for obj in scene.descendants(owner):
+        for obj in scene.export_objects(owner):
             if obj.type!='MESH' or obj.tanuki.usage not in ('SCENERY','BOTH'):continue
             copy=obj.copy();copy.data=obj.data.copy();copy.parent=None;copy.matrix_world=obj.matrix_world.copy()
             preview.collection.objects.link(copy);owned.append(copy)

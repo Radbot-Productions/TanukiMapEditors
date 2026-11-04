@@ -19,6 +19,7 @@ try
     string action=r.GetProperty("action").GetString()!;
     Task work=action switch
     {
+        "connect"=>Task.CompletedTask,
         "refresh"=>steam.Refresh(),
         "download"=>Download(),
         "publish"=>Publish(),
@@ -27,6 +28,7 @@ try
     while(!work.IsCompleted){steam.Poll();Thread.Sleep(20);}
     work.GetAwaiter().GetResult();
     if(action=="refresh")Write(new{success=true,account=steam.Account,items=steam.Items});
+    if(action=="connect")Write(new{success=true,account=steam.Account,connected=true});
     async Task Download()
     {
         var result=await steam.Download(ulong.Parse(r.GetProperty("id").GetString()!));
