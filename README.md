@@ -1,5 +1,15 @@
 # Tanuki Map Editors
 
+## Setup instructions for every editor
+
+- **[Blender setup and Workshop instructions](docs/blender.md)** — includes the exact Install from Disk menu location.
+- **[Unity setup](docs/unity.md)**
+- **[Godot setup](docs/godot.md)**
+- **[Unreal setup](docs/unreal.md)**
+
+The 0.2 packages for all four editors are being prepared. The older public Blender release remains available below; use each release's notes to check which features it includes.
+
+
 Map authoring tools for Tanuki Tag. This public preview currently provides the
 Blender addon. Unity, Godot and Unreal downloads will be added here separately.
 
